@@ -1,0 +1,33 @@
+# Google ADK and Gemini API
+google-adk>=0.1.0
+google-generativeai>=0.3.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Python 3.9 compatibility
+importlib-metadata>=4.0.0; python_version<"3.10"
+
+# Utilities
+requests>=2.31.0
+pydantic>=2.0.0
+
+# Optional: For web search and time tools
+duckduckgo-search>=3.9.0  # For web_search tool
+pytz>=2023.3  # For timezone support in get_current_time
+
+# Optional: For advanced agent features
+langchain>=0.1.0
+langchain-google-genai>=0.0.5
+
+# Multimodal capabilities
+Pillow>=10.0.0  # For image processing
+
+# Google Cloud services (recommended for Google ADK)
+google-cloud-aiplatform>=1.38.0  # For Imagen (optional - set GOOGLE_APPLICATION_CREDENTIALS)
+google-cloud-speech>=2.19.0  # For Speech-to-Text (optional)
+google-cloud-texttospeech>=2.14.0  # For Text-to-Speech (optional)
+
+# OpenAI services (alternative, easier setup)
+openai>=1.0.0  # For DALL-E, Whisper, TTS (optional - set OPENAI_API_KEY)
+
