@@ -1,0 +1,19 @@
+# Uploads
+uploads/
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+
+# Conversation History
+conversation_history/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Environment
+.env
+

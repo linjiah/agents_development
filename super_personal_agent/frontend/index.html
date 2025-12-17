@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orel - Superintelligent AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes loopRotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes loopGlow {
+            0%, 100% { 
+                opacity: 0.6;
+                filter: blur(40px) brightness(1);
+            }
+            50% { 
+                opacity: 0.9;
+                filter: blur(35px) brightness(1.2);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'SF Pro Display', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Glowing loop/ribbon effect - main element */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            transform: translate(-50%, -50%);
+            background: 
+                conic-gradient(
+                    from 0deg,
+                    #00d4ff 0deg,
+                    #00d4ff 60deg,
+                    #7b2ff7 120deg,
+                    #7b2ff7 180deg,
+                    #00d4ff 240deg,
+                    #00d4ff 300deg,
+                    #00d4ff 360deg
+                );
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: loopRotate 20s linear infinite;
+            filter: blur(60px);
+            opacity: 0.4;
+        }
+
+        /* Additional glowing loop layers for depth */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            transform: translate(-50%, -50%) rotate(45deg);
+            background: 
+                conic-gradient(
+                    from 45deg,
+                    #00d4ff 0deg,
+                    #7b2ff7 90deg,
+                    #00d4ff 180deg,
+                    #7b2ff7 270deg,
+                    #00d4ff 360deg
+                );
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: loopRotate 25s linear infinite reverse, loopGlow 4s ease-in-out infinite;
+            filter: blur(50px);
+            opacity: 0.3;
+        }
+
+        /* Glowing loop element - SVG path style */
+        .glow-loop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 700px;
+            height: 700px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .glow-loop::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center, 
+                    transparent 30%,
+                    rgba(0, 212, 255, 0.3) 40%,
+                    rgba(123, 47, 247, 0.3) 50%,
+                    transparent 70%
+                );
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: pulse 6s ease-in-out infinite;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(0, 212, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .header {
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.15) 0%, 
+                rgba(123, 47, 247, 0.15) 50%,
+                rgba(0, 212, 255, 0.15) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+            color: #ffffff;
+            padding: 40px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+            gap: 20px;
+        }
+
+        .header-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .header-tagline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(120, 219, 255, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        .header-tagline-logo {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .message-logo {
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+            filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+        }
+
+        .message-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-logo svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)) 
+                    drop-shadow(0 0 40px rgba(123, 47, 247, 0.4));
+        }
+
+        .header-logo:hover svg {
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.9)) 
+                    drop-shadow(0 0 60px rgba(123, 47, 247, 0.6));
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { 
+                opacity: 1;
+                filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+            }
+            50% { 
+                opacity: 0.9;
+                filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.9));
+            }
+        }
+
+        .header-logo svg .bot-body {
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.8),
+                0 0 40px rgba(0, 212, 255, 0.5),
+                0 0 60px rgba(123, 47, 247, 0.4),
+                0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.2em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(15, 15, 20, 0.8);
+            backdrop-filter: blur(15px) saturate(180%);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(0, 212, 255, 0.1);
+        }
+
+        .panel h2 {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            min-height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 15px;
+            background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            min-height: 0; /* Important for flex scrolling */
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(123, 47, 247, 0.3) 100%);
+            color: #ffffff;
+            margin-left: auto;
+            text-align: right;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            box-shadow: 0 2px 15px rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .message.agent {
+            background: rgba(20, 20, 30, 0.8);
+            color: #e0e8ff;
+            border: 1px solid rgba(123, 47, 247, 0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .message-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .input-group input,
+        .input-group textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1em;
+            min-width: 0;
+            background: rgba(15, 15, 20, 0.8);
+            color: #e0e8ff;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            background: rgba(20, 20, 30, 0.9);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: rgba(224, 232, 255, 0.5);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 60px;
+            max-height: 150px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.8) 0%, rgba(123, 47, 247, 0.8) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 1) 0%, rgba(123, 47, 247, 1) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 100, 120, 0.6);
+            color: #ffffff;
+            border: 1px solid rgba(120, 219, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(120, 120, 140, 0.8);
+            box-shadow: 0 4px 15px rgba(120, 219, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, rgba(120, 255, 150, 0.8) 0%, rgba(120, 219, 255, 0.8) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(120, 255, 150, 0.5);
+            box-shadow: 0 4px 15px rgba(120, 255, 150, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, rgba(120, 255, 150, 1) 0%, rgba(120, 219, 255, 1) 100%);
+            box-shadow: 0 6px 20px rgba(120, 255, 150, 0.5);
+        }
+
+        .file-upload {
+            margin: 15px 0;
+            padding: 15px;
+            border: 2px dashed rgba(0, 212, 255, 0.5);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(15, 15, 20, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .file-upload:hover {
+            background: #f0f4ff;
+            border-color: #5568d3;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-label {
+            cursor: pointer;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .feature-card {
+            background: rgba(15, 15, 20, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px) saturate(180%);
+        }
+
+        .feature-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            background: rgba(20, 20, 30, 0.85);
+        }
+
+        .feature-card h3 {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(120, 219, 255, 0.2);
+            border-top: 3px solid #78dbff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 10px rgba(120, 219, 255, 0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .status.success {
+            background: rgba(0, 255, 150, 0.2);
+            color: #00ff96;
+            border: 1px solid rgba(0, 255, 150, 0.4);
+            box-shadow: 0 2px 10px rgba(0, 255, 150, 0.3);
+        }
+
+        .status.error {
+            background: rgba(255, 100, 150, 0.2);
+            color: #ff6496;
+            border: 1px solid rgba(255, 100, 150, 0.4);
+            box-shadow: 0 2px 10px rgba(255, 100, 150, 0.3);
+        }
+
+        .status.info {
+            background: rgba(120, 219, 255, 0.25);
+            color: #1a4d6e;
+            border: 1px solid rgba(120, 219, 255, 0.5);
+            box-shadow: 0 2px 10px rgba(120, 219, 255, 0.3);
+        }
+
+        .clear-chat-btn {
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .admin-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(100, 100, 120, 0.8);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(120, 219, 255, 0.3);
+            transition: all 0.3s;
+            border: 1px solid rgba(120, 219, 255, 0.3);
+        }
+
+        .admin-link:hover {
+            background: rgba(120, 120, 140, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(120, 219, 255, 0.4);
+            border-color: rgba(120, 219, 255, 0.5);
+        }
+
+        .recording-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #dc3545;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .audio-player {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #waveformCanvas {
+            width: 100%;
+            height: 100px;
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+            border: 1px solid rgba(120, 219, 255, 0.3);
+        }
+
+        #waveformCanvas.recording {
+            display: block;
+        }
+
+        .waveform-container {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(15, 15, 20, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        #cameraContainer {
+            display: none;
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(15, 15, 20, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        #cameraContainer.active {
+            display: block;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 8px;
+            background: #000;
+            margin-bottom: 10px;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .camera-preview {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .camera-preview.active {
+            display: block;
+        }
+
+        .camera-preview img,
+        .camera-preview video {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Custom Scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.5);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(120, 219, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(120, 219, 255, 0.7);
+        }
+
+        /* Additional futuristic elements */
+        .file-upload:hover {
+            border-color: rgba(120, 219, 255, 0.7);
+            background: rgba(120, 219, 255, 0.1);
+            box-shadow: 0 0 20px rgba(120, 219, 255, 0.2);
+        }
+
+        /* Text color adjustments */
+        h2, h3 {
+            color: #78dbff;
+        }
+
+        /* Input focus glow */
+        input:focus, textarea:focus, select:focus {
+            box-shadow: 0 0 15px rgba(120, 219, 255, 0.4) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Glowing loop element -->
+    <div class="glow-loop"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>⚡ OREL</h1>
+                <div class="header-tagline">
+                    <div class="header-tagline-logo">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="taglineBotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#7b2ff7;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="taglineEyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                </linearGradient>
+                                <filter id="taglineGlow">
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <polygon points="100,20 160,50 160,110 100,140 40,110 40,50" 
+                                     fill="url(#taglineBotGradient)" 
+                                     stroke="#00d4ff" 
+                                     stroke-width="2"
+                                     opacity="0.9"/>
+                            <polygon points="100,40 145,63 145,97 100,120 55,97 55,63" 
+                                     fill="none" 
+                                     stroke="#7b2ff7" 
+                                     stroke-width="1.5"
+                                     opacity="0.6"/>
+                            <circle cx="80" cy="75" r="12" fill="url(#taglineEyeGradient)" filter="url(#taglineGlow)"/>
+                            <circle cx="80" cy="75" r="6" fill="#00d4ff"/>
+                            <circle cx="120" cy="75" r="12" fill="url(#taglineEyeGradient)" filter="url(#taglineGlow)"/>
+                            <circle cx="120" cy="75" r="6" fill="#00d4ff"/>
+                            <rect x="75" y="95" width="50" height="8" rx="4" fill="#7b2ff7" opacity="0.8"/>
+                            <line x1="100" y1="20" x2="100" y2="5" stroke="#00d4ff" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="100" cy="5" r="4" fill="#00d4ff"/>
+                        </svg>
+                    </div>
+                    <p>Your partner to think, observe, listen, execute, and create alongside you.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Chat Panel -->
+            <div class="panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h2 style="margin: 0;">💬 Chat</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary clear-chat-btn" onclick="startNewConversation()" style="font-size: 0.9em;">🆕 New Conversation</button>
+                        <button class="btn btn-secondary clear-chat-btn" onclick="clearChat()">Clear View</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px; padding: 10px; background: rgba(120, 219, 255, 0.1); border-radius: 10px; border: 1px solid rgba(120, 219, 255, 0.2); display: flex; align-items: center; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: #e0e8ff;">
+                        <input type="checkbox" id="autoTTS" style="cursor: pointer;">
+                        <span>🔊 Auto-play audio responses</span>
+                    </label>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message agent">
+                            <span class="message-logo">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="initBotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#7b2ff7;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="initEyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                        </linearGradient>
+                                        <filter id="initGlow">
+                                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                            <feMerge>
+                                                <feMergeNode in="coloredBlur"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                    <polygon points="100,20 160,50 160,110 100,140 40,110 40,50" 
+                                             fill="url(#initBotGradient)" 
+                                             stroke="#00d4ff" 
+                                             stroke-width="2"
+                                             opacity="0.9"/>
+                                    <polygon points="100,40 145,63 145,97 100,120 55,97 55,63" 
+                                             fill="none" 
+                                             stroke="#7b2ff7" 
+                                             stroke-width="1.5"
+                                             opacity="0.6"/>
+                                    <circle cx="80" cy="75" r="12" fill="url(#initEyeGradient)" filter="url(#initGlow)"/>
+                                    <circle cx="80" cy="75" r="6" fill="#00d4ff"/>
+                                    <circle cx="120" cy="75" r="12" fill="url(#initEyeGradient)" filter="url(#initGlow)"/>
+                                    <circle cx="120" cy="75" r="6" fill="#00d4ff"/>
+                                    <rect x="75" y="95" width="50" height="8" rx="4" fill="#7b2ff7" opacity="0.8"/>
+                                    <line x1="100" y1="20" x2="100" y2="5" stroke="#00d4ff" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="100" cy="5" r="4" fill="#00d4ff"/>
+                                </svg>
+                            </span>
+                            Greetings. I am Orel, your superintelligent AI assistant. I possess advanced multimodal capabilities—vision, speech, and reasoning. How may I assist you today?
+                        </div>
+                    </div>
+                    
+                    <div class="file-upload" id="imageUpload">
+                        <label for="imageFile" class="file-upload-label" style="color: #e0e8ff;">
+                            📷 Click to upload image for analysis
+                        </label>
+                        <input type="file" id="imageFile" accept="image/*">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button class="btn btn-primary" id="voiceRecordBtn" onclick="toggleVoiceRecording()" style="flex: 1;">
+                            🎤 Start Voice Input
+                        </button>
+                        <button class="btn btn-secondary" id="voiceStopBtn" onclick="stopVoiceRecording()" style="display: none; flex: 1;">
+                            ⏹️ Stop Recording
+                        </button>
+                    </div>
+                    <div id="recordingStatus" style="display: none; text-align: center; padding: 10px; background: rgba(255, 200, 100, 0.2); border: 1px solid rgba(255, 200, 100, 0.4); border-radius: 8px; margin-bottom: 10px; color: #ffc864;">
+                        <span class="loading"></span> Recording... Speak now!
+                    </div>
+                    <div id="waveformContainer" style="display: none;">
+                        <canvas id="waveformCanvas"></canvas>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="messageInput" placeholder="Communicate with Orel..."></textarea>
+                        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Panel -->
+            <div class="panel">
+                    <h2>⚡ Capabilities</h2>
+                
+                    <div class="status info" id="statusMessage" style="color: #78dbff;">
+                        System Ready
+                    </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card" style="background: rgba(30, 35, 55, 0.6); border: 1px solid rgba(120, 219, 255, 0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                        <h3 style="color: #78dbff; margin-top: 0;">🖼️ Generate Image</h3>
+                        <input type="text" id="imagePrompt" placeholder="Describe the image..." style="width: 100%; margin: 10px 0; padding: 8px; border: 1px solid rgba(120, 219, 255, 0.3); border-radius: 8px; background: rgba(15, 20, 35, 0.8); color: #e0e8ff;">
+                        <button class="btn btn-primary" onclick="generateImage()" style="width: 100%;">Generate</button>
+                    </div>
+
+                    <div class="feature-card" style="background: rgba(30, 35, 55, 0.6); border: 1px solid rgba(120, 219, 255, 0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                        <h3 style="color: #78dbff; margin-top: 0;">🎤 Transcribe Audio</h3>
+                        <div class="file-upload" style="margin: 10px 0;">
+                            <label for="audioFile" class="file-upload-label" style="font-size: 0.9em; color: #e0e8ff;">
+                                Upload Audio
+                            </label>
+                            <input type="file" id="audioFile" accept="audio/*">
+                        </div>
+                        <button class="btn btn-primary" onclick="transcribeAudio()" style="width: 100%;">Transcribe</button>
+                    </div>
+
+                    <div class="feature-card" style="background: rgba(30, 35, 55, 0.6); border: 1px solid rgba(120, 219, 255, 0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                        <h3 style="color: #78dbff; margin-top: 0;">🔊 Text to Speech</h3>
+                        <textarea id="ttsText" placeholder="Enter text..." style="width: 100%; margin: 10px 0; padding: 8px; border: 1px solid rgba(120, 219, 255, 0.3); border-radius: 8px; min-height: 60px; background: rgba(15, 20, 35, 0.8); color: #e0e8ff;"></textarea>
+                        <button class="btn btn-primary" onclick="textToSpeech()" style="width: 100%;">Generate Speech</button>
+                    </div>
+                </div>
+
+                <!-- Camera Section -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(120, 219, 255, 0.3);">
+                    <h3 style="margin-top: 0; color: #78dbff;">📷 Camera</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button class="btn btn-success" id="cameraStartBtn" onclick="startCamera()" style="flex: 1;">
+                            📷 Start Camera
+                        </button>
+                        <button class="btn btn-secondary" id="cameraStopBtn" onclick="stopCamera()" style="display: none; flex: 1;">
+                            ⏹️ Stop Camera
+                        </button>
+                    </div>
+                    
+                    <div id="cameraContainer">
+                        <video id="cameraVideo" autoplay playsinline></video>
+                        <div class="camera-controls">
+                            <button class="btn btn-primary" onclick="takePhoto()" style="flex: 1;">📸 Take Photo</button>
+                            <button class="btn btn-primary" id="videoRecordBtn" onclick="toggleVideoRecording()" style="flex: 1;">🎥 Start Recording</button>
+                            <button class="btn btn-secondary" id="videoStopBtn" onclick="stopVideoRecording()" style="display: none; flex: 1;">⏹️ Stop Recording</button>
+                        </div>
+                        <div id="cameraPreview" class="camera-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="admin.html" class="admin-link">🔧 Admin & History</a>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let uploadedImagePath = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let audioContext = null;
+        let analyser = null;
+        let dataArray = null;
+        let animationFrame = null;
+        let microphoneStream = null;
+        
+        // Camera variables
+        let cameraStream = null;
+        let videoRecorder = null;
+        let videoChunks = [];
+        let isVideoRecording = false;
+        
+        // Agent camera control
+        let agentCameraEnabled = false;
+        let capturePollInterval = null;
+
+        // Check API health on load
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                if (data.status === 'healthy') {
+                    showStatus('API connected successfully', 'success');
+                } else {
+                    showStatus('API connection issue', 'error');
+                }
+            } catch (error) {
+                showStatus('Cannot connect to API. Make sure the backend is running on port 8000', 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function getOrelLogo() {
+            return `<span class="message-logo">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="msgBotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#7b2ff7;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="msgEyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="msgGlow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <polygon points="100,20 160,50 160,110 100,140 40,110 40,50" 
+                             fill="url(#msgBotGradient)" 
+                             stroke="#00d4ff" 
+                             stroke-width="2"
+                             opacity="0.9"/>
+                    <polygon points="100,40 145,63 145,97 100,120 55,97 55,63" 
+                             fill="none" 
+                             stroke="#7b2ff7" 
+                             stroke-width="1.5"
+                             opacity="0.6"/>
+                    <circle cx="80" cy="75" r="12" fill="url(#msgEyeGradient)" filter="url(#msgGlow)"/>
+                    <circle cx="80" cy="75" r="6" fill="#00d4ff"/>
+                    <circle cx="120" cy="75" r="12" fill="url(#msgEyeGradient)" filter="url(#msgGlow)"/>
+                    <circle cx="120" cy="75" r="6" fill="#00d4ff"/>
+                    <rect x="75" y="95" width="50" height="8" rx="4" fill="#7b2ff7" opacity="0.8"/>
+                    <line x1="100" y1="20" x2="100" y2="5" stroke="#00d4ff" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="100" cy="5" r="4" fill="#00d4ff"/>
+                </svg>
+            </span>`;
+        }
+
+        function addMessage(text, isUser = false, imageUrl = null) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
+            
+            // Handle undefined/null text
+            if (!text) {
+                text = '⚠️ [Empty response from agent. Please check console for errors.]';
+            }
+            
+            // Convert to string if needed
+            text = String(text);
+            
+            // Escape HTML to prevent XSS
+            const escapedText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            let content = isUser 
+                ? `<strong>You:</strong> ${escapedText}`
+                : `${getOrelLogo()} ${escapedText}`;
+            if (imageUrl) {
+                content += `<img src="${imageUrl}" class="message-image" alt="Uploaded image">`;
+            }
+            
+            messageDiv.innerHTML = content;
+            messagesDiv.appendChild(messageDiv);
+            // Scroll to bottom smoothly
+            messagesDiv.scrollTo({
+                top: messagesDiv.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        async function startNewConversation() {
+            if (confirm('Start a new conversation? This will reset the chat history.')) {
+                try {
+                    const response = await fetch(`${API_BASE}/new-conversation`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const messagesDiv = document.getElementById('chatMessages');
+                        messagesDiv.innerHTML = `<div class="message agent">${getOrelLogo()} New conversation initialized. How may I assist you?</div>`;
+                        uploadedImagePath = null;
+                        showStatus('New conversation started!', 'success');
+                    }
+                } catch (error) {
+                    showStatus(`Error: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        function clearChat() {
+            if (confirm('Clear chat view? (This does not delete conversation history)')) {
+                const messagesDiv = document.getElementById('chatMessages');
+                messagesDiv.innerHTML = `<div class="message agent">${getOrelLogo()} Chat view cleared. How may I assist you?</div>`;
+                uploadedImagePath = null;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            addMessage(text, true, uploadedImagePath ? `/api/files/uploads/${uploadedImagePath}` : null);
+            input.value = '';
+            
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message agent';
+            loadingDiv.innerHTML = '<strong>Agent:</strong> <span class="loading"></span> Thinking...';
+            document.getElementById('chatMessages').appendChild(loadingDiv);
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        image_path: uploadedImagePath
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove loading message
+                loadingDiv.remove();
+                
+                addMessage(data.response, false);
+                
+                // Generate and play TTS if auto-TTS is enabled
+                const autoTTS = document.getElementById('autoTTS').checked;
+                if (autoTTS) {
+                    try {
+                        const ttsResponse = await fetch(`${API_BASE}/text-to-speech`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: data.response, voice: 'alloy' })
+                        });
+                        const ttsData = await ttsResponse.json();
+                        
+                        if (ttsData.audio_url) {
+                            const audio = new Audio(ttsData.audio_url);
+                            audio.play().catch(e => console.log('Auto-play prevented:', e));
+                            
+                            // Add audio player to message
+                            const audioDiv = document.createElement('div');
+                            audioDiv.className = 'message agent';
+                            audioDiv.style.marginTop = '10px';
+                            audioDiv.innerHTML = `
+                                <audio controls class="audio-player">
+                                    <source src="${ttsData.audio_url}" type="audio/mpeg">
+                                </audio>
+                            `;
+                            document.getElementById('chatMessages').appendChild(audioDiv);
+                        }
+                    } catch (e) {
+                        console.log('TTS generation failed:', e);
+                    }
+                }
+                
+                uploadedImagePath = null; // Reset after use
+            } catch (error) {
+                loadingDiv.remove();
+                addMessage(`Error: ${error.message}`, false);
+            }
+        }
+
+        // Image upload
+        document.getElementById('imageFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                showStatus('Uploading image...', 'info');
+                const response = await fetch(`${API_BASE}/upload/image`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                uploadedImagePath = data.path;
+                showStatus(`Image uploaded: ${data.filename}`, 'success');
+                addMessage(`📷 Image uploaded: ${data.filename}`, true, `/api/files/uploads/${data.path}`);
+            } catch (error) {
+                showStatus(`Upload failed: ${error.message}`, 'error');
+            }
+        });
+
+        // Generate image
+        async function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value.trim();
+            if (!prompt) {
+                showStatus('Please enter an image description', 'error');
+                return;
+            }
+
+            try {
+                showStatus('Generating image...', 'info');
+                const response = await fetch(`${API_BASE}/generate-image`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt, style: 'realistic' })
+                });
+
+                const data = await response.json();
+                showStatus('Image generated!', 'success');
+                addMessage(data.message, false);
+                
+                if (data.image_url) {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'message agent';
+                    imgDiv.innerHTML = `<img src="${data.image_url}" class="message-image" alt="Generated image">`;
+                    document.getElementById('chatMessages').appendChild(imgDiv);
+                }
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Transcribe audio
+        async function transcribeAudio() {
+            const fileInput = document.getElementById('audioFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                showStatus('Please select an audio file', 'error');
+                return;
+            }
+
+            // Upload first
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                showStatus('Uploading and transcribing audio...', 'info');
+                
+                // Upload
+                const uploadResponse = await fetch(`${API_BASE}/upload/audio`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const uploadData = await uploadResponse.json();
+
+                // Transcribe
+                const transcribeResponse = await fetch(`${API_BASE}/transcribe-audio`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ audio_path: uploadData.filename })
+                });
+
+                const data = await transcribeResponse.json();
+                showStatus('Transcription complete!', 'success');
+                addMessage(`📝 Audio Transcript: ${data.transcript}`, false);
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Text to speech
+        async function textToSpeech() {
+            const text = document.getElementById('ttsText').value.trim();
+            if (!text) {
+                showStatus('Please enter text to convert', 'error');
+                return;
+            }
+
+            try {
+                showStatus('Generating speech...', 'info');
+                const response = await fetch(`${API_BASE}/text-to-speech`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, voice: 'alloy' })
+                });
+
+                const data = await response.json();
+                showStatus('Speech generated!', 'success');
+                addMessage(data.message, false);
+                
+                if (data.audio_url) {
+                    const audioDiv = document.createElement('div');
+                    audioDiv.className = 'message agent';
+                    audioDiv.innerHTML = `<audio controls><source src="${data.audio_url}" type="audio/mpeg"></audio>`;
+                    document.getElementById('chatMessages').appendChild(audioDiv);
+                }
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Voice Recording Functions
+        async function toggleVoiceRecording() {
+            if (isRecording) {
+                stopVoiceRecording();
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                microphoneStream = stream;
+                
+                // Setup audio visualization
+                setupAudioVisualization(stream);
+                
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    stopAudioVisualization();
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    await processVoiceInput(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                
+                document.getElementById('voiceRecordBtn').style.display = 'none';
+                document.getElementById('voiceStopBtn').style.display = 'block';
+                document.getElementById('recordingStatus').style.display = 'block';
+                document.getElementById('waveformContainer').style.display = 'block';
+                document.getElementById('waveformCanvas').classList.add('recording');
+                
+                showStatus('🎤 Recording... Speak now!', 'info');
+            } catch (error) {
+                showStatus(`Microphone access denied: ${error.message}`, 'error');
+                alert('Please allow microphone access to use voice input.');
+            }
+        }
+
+        function setupAudioVisualization(stream) {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(stream);
+                
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                
+                source.connect(analyser);
+                
+                drawWaveform();
+            } catch (error) {
+                console.error('Error setting up audio visualization:', error);
+            }
+        }
+
+        function drawWaveform() {
+            if (!isRecording || !analyser) return;
+            
+            const canvas = document.getElementById('waveformCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Clear canvas
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw waveform bars
+            const barWidth = (canvas.width / dataArray.length) * 2.5;
+            let barHeight;
+            let x = 0;
+            
+            ctx.fillStyle = '#007bff';
+            
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = (dataArray[i] / 255) * canvas.height;
+                
+                // Draw bar with gradient
+                const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+                gradient.addColorStop(0, '#007bff');
+                gradient.addColorStop(1, '#0056b3');
+                ctx.fillStyle = gradient;
+                
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
+            
+            animationFrame = requestAnimationFrame(drawWaveform);
+        }
+
+        function stopAudioVisualization() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            
+            analyser = null;
+            dataArray = null;
+            
+            document.getElementById('waveformContainer').style.display = 'none';
+            document.getElementById('waveformCanvas').classList.remove('recording');
+            
+            // Clear canvas
+            const canvas = document.getElementById('waveformCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function stopVoiceRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                
+                document.getElementById('voiceRecordBtn').style.display = 'block';
+                document.getElementById('voiceStopBtn').style.display = 'none';
+                document.getElementById('recordingStatus').style.display = 'none';
+                
+                showStatus('Processing audio...', 'info');
+            }
+            
+            // Stop microphone stream
+            if (microphoneStream) {
+                microphoneStream.getTracks().forEach(track => track.stop());
+                microphoneStream = null;
+            }
+        }
+
+        async function processVoiceInput(audioBlob) {
+            try {
+                // Validate audio blob
+                if (!audioBlob || audioBlob.size === 0) {
+                    showStatus('Error: No audio recorded', 'error');
+                    addMessage('❌ No audio was recorded. Please try again.', false);
+                    return;
+                }
+
+                console.log(`[Voice] Audio blob size: ${audioBlob.size} bytes, type: ${audioBlob.type}`);
+
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.webm');
+                formData.append('generate_audio', 'true');
+                
+                console.log(`[Voice] Sending audio: ${audioBlob.size} bytes, type: ${audioBlob.type}`);
+                console.log(`[Voice] Endpoint: ${API_BASE}/chat-with-voice`);
+
+                showStatus('🎤 Transcribing and processing...', 'info');
+
+                const response = await fetch(`${API_BASE}/chat-with-voice`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log(`[Voice] Response status: ${response.status}`);
+                console.log(`[Voice] Response URL: ${response.url}`);
+
+                if (!response.ok) {
+                    let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.detail || errorData.error || errorMessage;
+                    } catch (e) {
+                        // If response is not JSON, use status text
+                        const text = await response.text().catch(() => '');
+                        if (text) {
+                            errorMessage = text;
+                        }
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showStatus(`Error: ${data.error}`, 'error');
+                    addMessage(`❌ ${data.error}`, false);
+                    return;
+                }
+
+                // Validate response data
+                if (!data.transcript) {
+                    showStatus('Error: No transcript received', 'error');
+                    addMessage('❌ Failed to transcribe audio. Please check your API keys and try again.', false);
+                    return;
+                }
+
+                if (!data.response) {
+                    showStatus('Error: No response from agent', 'error');
+                    addMessage('❌ Agent failed to generate a response.', false);
+                    return;
+                }
+
+                // Show transcript
+                addMessage(`🎤 ${data.transcript}`, true);
+
+                // Show agent response
+                addMessage(data.response, false);
+
+                // Play audio if available
+                if (data.audio_url) {
+                    console.log(`[Voice] Audio URL: ${data.audio_url}`);
+                    console.log(`[Voice] Full audio URL: ${window.location.origin}${data.audio_url}`);
+                    
+                    // Construct full URL if it's relative
+                    let fullAudioUrl = data.audio_url;
+                    if (data.audio_url.startsWith('/')) {
+                        fullAudioUrl = `http://localhost:8000${data.audio_url}`;
+                    }
+                    console.log(`[Voice] Using audio URL: ${fullAudioUrl}`);
+                    
+                    const audioDiv = document.createElement('div');
+                    audioDiv.className = 'message agent';
+                    audioDiv.innerHTML = `
+                        <strong>🔊 Audio Response:</strong><br>
+                        <audio controls class="audio-player" preload="auto" crossorigin="anonymous">
+                            <source src="${fullAudioUrl}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <div id="audioDebug" style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                            Loading audio...
+                        </div>
+                    `;
+                    document.getElementById('chatMessages').appendChild(audioDiv);
+                    
+                    // Auto-play audio
+                    const audio = audioDiv.querySelector('audio');
+                    const debugDiv = audioDiv.querySelector('#audioDebug');
+                    
+                    // Add comprehensive error handling
+                    audio.addEventListener('loadstart', () => {
+                        console.log('[Voice] Audio load started');
+                        if (debugDiv) debugDiv.textContent = 'Loading audio...';
+                    });
+                    
+                    audio.addEventListener('loadedmetadata', () => {
+                        console.log('[Voice] Audio metadata loaded');
+                        console.log('[Voice] Audio duration:', audio.duration);
+                        if (debugDiv) debugDiv.textContent = `Duration: ${audio.duration.toFixed(2)}s`;
+                    });
+                    
+                    audio.addEventListener('loadeddata', () => {
+                        console.log('[Voice] Audio data loaded');
+                        if (debugDiv) debugDiv.textContent = 'Audio loaded, ready to play';
+                    });
+                    
+                    audio.addEventListener('canplay', () => {
+                        console.log('[Voice] Audio can play');
+                        if (debugDiv) debugDiv.textContent = 'Ready to play';
+                        audio.play().catch(e => {
+                            console.log('[Voice] Auto-play prevented:', e);
+                            if (debugDiv) debugDiv.textContent = 'Click play button to hear the response';
+                        });
+                    });
+                    
+                    audio.addEventListener('error', (e) => {
+                        console.error('[Voice] Audio playback error:', e);
+                        console.error('[Voice] Audio src:', audio.src);
+                        console.error('[Voice] Audio error code:', audio.error?.code);
+                        console.error('[Voice] Audio error message:', audio.error?.message);
+                        
+                        let errorMsg = 'Audio playback failed';
+                        if (audio.error) {
+                            switch(audio.error.code) {
+                                case 1: errorMsg = 'MEDIA_ERR_ABORTED - Loading aborted'; break;
+                                case 2: errorMsg = 'MEDIA_ERR_NETWORK - Network error'; break;
+                                case 3: errorMsg = 'MEDIA_ERR_DECODE - Decode error'; break;
+                                case 4: errorMsg = 'MEDIA_ERR_SRC_NOT_SUPPORTED - Format not supported'; break;
+                            }
+                        }
+                        
+                        if (debugDiv) debugDiv.textContent = `Error: ${errorMsg}`;
+                        showStatus(`⚠️ Audio playback failed: ${errorMsg}`, 'error');
+                    });
+                    
+                    audio.addEventListener('stalled', () => {
+                        console.warn('[Voice] Audio loading stalled');
+                        if (debugDiv) debugDiv.textContent = 'Loading stalled...';
+                    });
+                    
+                    // Test if URL is accessible
+                    fetch(fullAudioUrl, { method: 'HEAD' })
+                        .then(response => {
+                            console.log(`[Voice] Audio URL HEAD request: ${response.status} ${response.statusText}`);
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+                            if (debugDiv) debugDiv.textContent = 'Audio file accessible';
+                        })
+                        .catch(error => {
+                            console.error('[Voice] Audio URL test failed:', error);
+                            if (debugDiv) debugDiv.textContent = `Error: ${error.message}`;
+                        });
+                } else {
+                    console.log('[Voice] No audio URL in response');
+                }
+
+                showStatus('✅ Voice conversation complete!', 'success');
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                addMessage(`❌ Error processing voice: ${error.message}`, false);
+            }
+        }
+
+        // Enter key to send
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Camera Functions
+        async function startCamera() {
+            try {
+                // Request camera access
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'user', // Front camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }, 
+                    audio: false 
+                });
+                
+                cameraStream = stream;
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = stream;
+                
+                // Show camera UI
+                document.getElementById('cameraContainer').classList.add('active');
+                document.getElementById('cameraStartBtn').style.display = 'none';
+                document.getElementById('cameraStopBtn').style.display = 'block';
+                
+                // Start polling if agent camera control is enabled
+                if (agentCameraEnabled) {
+                    startCapturePolling();
+                }
+                
+                showStatus('📷 Camera started!', 'success');
+            } catch (error) {
+                showStatus(`Camera access denied: ${error.message}`, 'error');
+                alert('Please allow camera access to use this feature.');
+                console.error('Camera error:', error);
+            }
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            
+            const video = document.getElementById('cameraVideo');
+            video.srcObject = null;
+            
+            // Hide camera UI
+            document.getElementById('cameraContainer').classList.remove('active');
+            document.getElementById('cameraStartBtn').style.display = 'block';
+            document.getElementById('cameraStopBtn').style.display = 'none';
+            
+            // Stop video recording if active
+            if (isVideoRecording) {
+                stopVideoRecording();
+            }
+            
+            showStatus('Camera stopped', 'info');
+        }
+
+        function takePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.createElement('canvas');
+            const preview = document.getElementById('cameraPreview');
+            
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw video frame to canvas
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to blob and upload
+            canvas.toBlob(async (blob) => {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', blob, `photo_${Date.now()}.jpg`);
+                    
+                    showStatus('📸 Uploading photo...', 'info');
+                    
+                    const response = await fetch(`${API_BASE}/upload/image`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        uploadedImagePath = data.path;
+                        
+                        // Show preview
+                        preview.classList.add('active');
+                        preview.innerHTML = `
+                            <strong>📸 Photo captured:</strong><br>
+                            <img src="/api/files/uploads/${data.path}" alt="Captured photo" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-primary" onclick="sendPhotoToAgent('${data.path}')">Send to Agent</button>
+                                <button class="btn btn-secondary" onclick="clearPhotoPreview()">Clear</button>
+                            </div>
+                        `;
+                        
+                        showStatus('✅ Photo captured and ready!', 'success');
+                    } else {
+                        throw new Error(data.detail || 'Upload failed');
+                    }
+                } catch (error) {
+                    showStatus(`Error uploading photo: ${error.message}`, 'error');
+                    console.error('Photo upload error:', error);
+                }
+            }, 'image/jpeg', 0.95);
+        }
+
+        function toggleVideoRecording() {
+            if (isVideoRecording) {
+                stopVideoRecording();
+                return;
+            }
+
+            if (!cameraStream) {
+                showStatus('Please start camera first', 'error');
+                return;
+            }
+
+            try {
+                videoChunks = [];
+                
+                // Try different codecs for compatibility
+                let mimeType = 'video/webm';
+                const codecs = [
+                    'video/webm;codecs=vp9',
+                    'video/webm;codecs=vp8',
+                    'video/webm',
+                    'video/mp4'
+                ];
+                
+                // Find supported codec
+                for (const codec of codecs) {
+                    if (MediaRecorder.isTypeSupported(codec)) {
+                        mimeType = codec;
+                        break;
+                    }
+                }
+                
+                console.log(`[Camera] Using codec: ${mimeType}`);
+                videoRecorder = new MediaRecorder(cameraStream, {
+                    mimeType: mimeType
+                });
+
+                videoRecorder.ondataavailable = (event) => {
+                    if (event.data && event.data.size > 0) {
+                        videoChunks.push(event.data);
+                    }
+                };
+
+                videoRecorder.onstop = async () => {
+                    const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+                    await saveVideo(videoBlob);
+                };
+
+                videoRecorder.start();
+                isVideoRecording = true;
+                
+                document.getElementById('videoRecordBtn').style.display = 'none';
+                document.getElementById('videoStopBtn').style.display = 'block';
+                
+                showStatus('🎥 Recording video...', 'info');
+            } catch (error) {
+                showStatus(`Error starting video recording: ${error.message}`, 'error');
+                console.error('Video recording error:', error);
+            }
+        }
+
+        function stopVideoRecording() {
+            if (videoRecorder && isVideoRecording) {
+                videoRecorder.stop();
+                isVideoRecording = false;
+                
+                document.getElementById('videoRecordBtn').style.display = 'block';
+                document.getElementById('videoStopBtn').style.display = 'none';
+                
+                showStatus('Processing video...', 'info');
+            }
+        }
+
+        async function saveVideo(videoBlob) {
+            try {
+                const formData = new FormData();
+                formData.append('file', videoBlob, `video_${Date.now()}.webm`);
+                
+                showStatus('💾 Saving video...', 'info');
+                
+                // Create download link
+                const url = URL.createObjectURL(videoBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `video_${Date.now()}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Show preview
+                const preview = document.getElementById('cameraPreview');
+                preview.classList.add('active');
+                preview.innerHTML = `
+                    <strong>🎥 Video recorded:</strong><br>
+                    <video controls style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                        <source src="${url}" type="video/webm">
+                    </video>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-secondary" onclick="clearPhotoPreview()">Clear</button>
+                    </div>
+                `;
+                
+                showStatus('✅ Video saved!', 'success');
+            } catch (error) {
+                showStatus(`Error saving video: ${error.message}`, 'error');
+                console.error('Video save error:', error);
+            }
+        }
+
+        async function sendPhotoToAgent(imagePath) {
+            try {
+                console.log(`[Photo] Sending photo to agent: ${imagePath}`);
+                showStatus('📷 Analyzing photo...', 'info');
+                
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: "Please analyze this image in detail. Identify any people, what they're doing, and what they're working on.",
+                        image_path: imagePath
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log(`[Photo] Agent response:`, data);
+                
+                if (data.response && data.response.trim()) {
+                    addMessage(data.response, false);
+                    showStatus('✅ Photo analyzed!', 'success');
+                } else {
+                    addMessage('⚠️ Agent returned an empty response. Please check the console for errors.', false);
+                    showStatus('⚠️ Empty response from agent', 'error');
+                }
+            } catch (error) {
+                console.error('[Photo] Error:', error);
+                showStatus(`Error sending photo: ${error.message}`, 'error');
+                addMessage(`❌ Error: ${error.message}`, false);
+            }
+        }
+
+        function clearPhotoPreview() {
+            const preview = document.getElementById('cameraPreview');
+            preview.classList.remove('active');
+            preview.innerHTML = '';
+            uploadedImagePath = null;
+        }
+
+        // Agent Camera Control
+        async function toggleAgentCameraControl() {
+            const checkbox = document.getElementById('agentCameraControl');
+            agentCameraEnabled = checkbox.checked;
+            
+            try {
+                const response = await fetch(`${API_BASE}/agent/enable-camera`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: agentCameraEnabled })
+                });
+                
+                const data = await response.json();
+                
+                if (agentCameraEnabled) {
+                    showStatus('🤖 Agent camera control enabled', 'success');
+                    startCapturePolling();
+                } else {
+                    showStatus('Agent camera control disabled', 'info');
+                    stopCapturePolling();
+                }
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                checkbox.checked = false;
+                agentCameraEnabled = false;
+            }
+        }
+
+        function startCapturePolling() {
+            if (capturePollInterval) {
+                clearInterval(capturePollInterval);
+            }
+            
+            console.log('[Agent Camera] Starting polling, enabled:', agentCameraEnabled, 'camera:', !!cameraStream);
+            
+            // Poll every 2 seconds for capture requests
+            capturePollInterval = setInterval(async () => {
+                if (!agentCameraEnabled) {
+                    console.log('[Agent Camera] Polling skipped - agent control disabled');
+                    return;
+                }
+                
+                if (!cameraStream) {
+                    console.log('[Agent Camera] Polling skipped - camera not started');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${API_BASE}/agent/poll-capture`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'capture_requested') {
+                        console.log('[Agent Camera] Capture requested:', data.capture_id);
+                        // Automatically capture photo
+                        await capturePhotoForAgent(data.capture_id);
+                    }
+                } catch (error) {
+                    console.error('[Agent Camera] Polling error:', error);
+                }
+            }, 2000);
+        }
+
+        function stopCapturePolling() {
+            if (capturePollInterval) {
+                clearInterval(capturePollInterval);
+                capturePollInterval = null;
+            }
+        }
+
+        async function capturePhotoForAgent(captureId) {
+            if (!cameraStream) {
+                console.warn('[Agent Camera] Camera not started, cannot capture');
+                return;
+            }
+            
+            try {
+                const video = document.getElementById('cameraVideo');
+                const canvas = document.createElement('canvas');
+                
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Convert to blob and upload
+                canvas.toBlob(async (blob) => {
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', blob, `agent_capture_${captureId}.jpg`);
+                        
+                        showStatus('🤖 Agent capturing photo...', 'info');
+                        
+                        const response = await fetch(`${API_BASE}/upload/image`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            // Notify backend that capture is complete
+                            await fetch(`${API_BASE}/agent/capture-complete`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    capture_id: captureId,
+                                    image_path: data.path
+                                })
+                            });
+                            
+                            // Automatically send to agent for analysis
+                            const chatResponse = await fetch(`${API_BASE}/chat`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    text: "I've captured a photo. Please analyze it to identify any people and what they're working on.",
+                                    image_path: data.path
+                                })
+                            });
+                            
+                            const chatData = await chatResponse.json();
+                            
+                            // Show in chat
+                            addMessage('📷 [Agent captured photo]', true, `/api/files/uploads/${data.path}`);
+                            addMessage(chatData.response, false);
+                            
+                            showStatus('✅ Photo captured and analyzed by agent', 'success');
+                        } else {
+                            throw new Error(data.detail || 'Upload failed');
+                        }
+                    } catch (error) {
+                        showStatus(`Error: ${error.message}`, 'error');
+                        console.error('Agent capture error:', error);
+                    }
+                }, 'image/jpeg', 0.95);
+            } catch (error) {
+                console.error('[Agent Camera] Capture error:', error);
+            }
+        }
+
+        // Initialize
+        checkHealth();
+    </script>
+</body>
+</html>
+
