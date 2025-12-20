@@ -48,7 +48,43 @@ def get_agent():
     global agent
     if agent is None:
         try:
-            agent = MultimodalAgent()
+            # Check for MCP weather server configuration
+            mcp_config = None
+            weather_mcp_type = os.getenv("WEATHER_MCP_TYPE", "").strip().lower()
+            
+            if weather_mcp_type == "stdio":
+                # Use stdio-based weather MCP server (requires npx and @modelcontextprotocol/server-weather)
+                mcp_config = {
+                    "type": "stdio",
+                    "command": "npx",
+                    "args": ["-y", "@modelcontextprotocol/server-weather"],
+                    "env": {}
+                }
+                print("🌤️  Configuring weather MCP server (stdio)...")
+            elif weather_mcp_type == "sse":
+                # Use SSE-based weather MCP server
+                weather_url = os.getenv("WEATHER_MCP_URL", "http://localhost:8001/sse")
+                mcp_config = {
+                    "type": "sse",
+                    "url": weather_url,
+                    "headers": {}
+                }
+                print(f"🌤️  Configuring weather MCP server (SSE): {weather_url}")
+            elif weather_mcp_type == "http":
+                # Use HTTP-based weather MCP server
+                weather_url = os.getenv("WEATHER_MCP_URL", "https://api.example.com/mcp/")
+                weather_key = os.getenv("WEATHER_MCP_API_KEY", "")
+                headers = {}
+                if weather_key:
+                    headers["X-API-Key"] = weather_key
+                mcp_config = {
+                    "type": "http",
+                    "url": weather_url,
+                    "headers": headers
+                }
+                print(f"🌤️  Configuring weather MCP server (HTTP): {weather_url}")
+            
+            agent = MultimodalAgent(mcp_config=mcp_config)
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to initialize agent: {str(e)}")
     return agent
@@ -310,7 +346,7 @@ async def chat(request: TextRequest):
         # Get response from agent
         print(f"[Chat] Calling agent.run()...")
         try:
-            response = agent.run(request.text, image_path=image_path)
+        response = agent.run(request.text, image_path=image_path)
             print(f"[Chat] Agent response received, length: {len(response) if response else 0}")
         except Exception as agent_error:
             print(f"[Chat] Error in agent.run(): {agent_error}")
