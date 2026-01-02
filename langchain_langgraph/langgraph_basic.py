@@ -15,15 +15,18 @@ class State(TypedDict):
 def node_1(state):
     print("---Node 1---")
     # Appends " AGI" to the existing state string
+    print("state at node_1: \n ", state)
     return {"graph_state": state['graph_state'] + " AGI"}
 
 def node_2(state):
     print("---Node 2---")
+    print("state at node_2: \n ", state)
     # Appends " Achieved!"
     return {"graph_state": state['graph_state'] + " Achieved!"}
 
 def node_3(state):
     print("---Node 3---")
+    print("state at node_3: \n ", state)
     # Appends " Not Achieved :("
     return {"graph_state": state['graph_state'] + " Not Achieved :("}
 
@@ -38,6 +41,8 @@ def decide_mood(state) -> Literal["node_2", "node_3"]:
 # 4. Construct the Graph
 # Initialize the graph builder with our State schema
 builder = StateGraph(State)
+
+# print("builder: \n ", builder)
 
 # Add nodes to the graph
 builder.add_node("node_1", node_1)
@@ -60,5 +65,11 @@ graph = builder.compile()
 
 # 6. Execute (Invoke)
 # We pass an initial state to start the workflow.
-result = graph.invoke({"graph_state": "Has AGI been achieved?"})
+
+
+#result = graph.invoke({"graph_state": "Has AGI been achieved?"})
+#print(result)
+
+state = State(graph_state="Has AGI been achieved?")
+result = graph.invoke(state)
 print(result)

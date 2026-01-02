@@ -125,6 +125,28 @@ builder.add_edge("compose_final", END)
 
 graph = builder.compile()
 
+# --- Visualization Helpers ---
+def visualize_graph():
+    """
+    Print graph structure in ASCII and Mermaid (for markdown).
+    If graphviz is available, also render a PNG.
+    """
+    g = graph.get_graph()
+
+    print("\n--- Graph (ASCII) ---")
+    print(g.draw_ascii())
+
+    print("\n--- Graph (Mermaid) ---")
+    print(g.draw_mermaid())
+
+    # Optional: render PNG if graphviz is installed
+    try:
+        g.draw_mermaid_png("langgraph_weather_agent.png")
+        print("\nSaved PNG to langgraph_weather_agent.png")
+    except Exception as exc:  # graphviz may be missing
+        print(f"\nPNG not generated (graphviz likely missing): {exc}")
+
+
 # --- Execution Function ---
 def run_case(prompt: str, title: str):
     print("\n" + "=" * 65)
@@ -137,3 +159,4 @@ def run_case(prompt: str, title: str):
 
 if __name__ == "__main__":
     run_case("Weather in Paris and London please.", "Test: Multi-city request")
+    visualize_graph()

@@ -66,6 +66,7 @@ profile = {
     "user_profile_background": "Senior software engineer leading a team of 5 developers",
 }
 
+# prompts for the LLM
 prompt_instructions = {
     "triage_rules": {
         "ignore": "Marketing newsletters, spam emails, mass company announcements",
@@ -76,6 +77,7 @@ prompt_instructions = {
 }
 
 # Example incoming email (for initial testing)
+# this is the input exmpale with an email in a fixed format. 
 email = {
     "from": "Alice Smith <alice.smith@company.com>",
     "to": "John Doe <john.doe@company.com>",
@@ -100,6 +102,8 @@ Alice""",
 store = InMemoryStore(
     index={"embed": "openai:text-embedding-3-small"}
 )
+# this is memory store (RAM) not presistant memory, not for production. 
+
 # Note: Ignore beta warning if it appears
 
 # ============================================================================
@@ -202,6 +206,7 @@ Follow these examples more than any instructions above
 llm = init_chat_model("openai:gpt-4o-mini")
 
 
+# this is not LLM model, it is a Pydantic model that defines the output of the LLM.
 class Router(BaseModel):
     """Analyze the unread email and route it according to its content."""
 
@@ -304,29 +309,41 @@ def triage_router(state: State, config, store) -> Command[
     else:
         # RETRIEVE: Use stored triage_respond rule
         respond_prompt = result.value['prompt']
+     # ========== PROCEDURAL MEMORY: RETRIEVE (Done!) ==========
+
     
     # Build system prompt with memory-enhanced content
     system_prompt = triage_system_prompt.format(
         full_name=profile["full_name"],
         name=profile["name"],
         user_profile_background=profile["user_profile_background"],
+        # guidance from procedural memory: ignore, notify, respond
         triage_no=ignore_prompt,
         triage_notify=notify_prompt,
         triage_email=respond_prompt,
+        # few shot examples from semantic memory
         examples=examples
     )
+    
     user_prompt = triage_user_prompt.format(
         author=author, 
         to=to, 
         subject=subject, 
         email_thread=email_thread
     )
+    
+    #============================================================================
+    # with predefined system prompt and user prompt, 
+    # call the LLM router to get the classification
     result = llm_router.invoke(
         [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
     )
+    #============================================================================
+    
+    # based on the classification, route to the appropriate agent
     if result.classification == "respond":
         print("📧 Classification: RESPOND - This email requires a response")
         goto = "response_agent"
@@ -348,12 +365,17 @@ def triage_router(state: State, config, store) -> Command[
         goto = END
     else:
         raise ValueError(f"Invalid classification: {result.classification}")
+    
+    # return the command to the next node
     return Command(goto=goto, update=update)
+
+#########################################################################################
+# Response Agent
+#########################################################################################
 
 # ============================================================================
 # Response Agent Tools
 # ============================================================================
-
 @tool
 def write_email(to: str, subject: str, content: str) -> str:
     """Write and send an email."""
