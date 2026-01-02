@@ -46,7 +46,11 @@ def geocode_city(name: str) -> dict:
     if not results:
         raise ValueError(f"Could not geocode city '{name}'.")
     r0 = results[0]
-    return {"city": r0["name"], "lat": r0["latitude"], "lon": r0["longitude"]}
+    
+    res_lat_lon =  {"city": r0["name"], "lat": r0["latitude"], "lon": r0["longitude"]}
+    print("res_lat_lon: \n ", res_lat_lon)
+    
+    return res_lat_lon
 
 def current_weather(lat: float, lon: float) -> dict:
     """Fetch current weather for coordinates using Open-Meteo."""
@@ -55,6 +59,7 @@ def current_weather(lat: float, lon: float) -> dict:
         "current": ["temperature_2m", "weather_code", "wind_speed_10m"],
         "timezone": "auto",
     }
+    
     resp = _request_with_retries("GET", OPEN_METEO_FORECAST_URL, params=params)
     data = resp.json()
     cur = data.get("current")
@@ -87,15 +92,22 @@ if not openai_api_key:
     raise ValueError("OPENAI_API_KEY not set in environment or .env file.")
 
 llm = ChatOpenAI(model="gpt-4o", api_key=openai_api_key)
+
 llm_with_tools = llm.bind_tools([geocode_city, current_weather])
 
+# --- Nodes ---
+# tool_calling_llm: call the LLM with the tools
 def tool_calling_llm(state: MyMessagesState):
     system = SystemMessage(content=(
         "You are a helpful weather assistant. "
         "When the user mentions cities, call geocode_city for each city, then call current_weather. "
         "Prefer Celsius unless the user explicitly requests Fahrenheit/imperial."
     ))
-    response = llm_with_tools.invoke([system] + state["messages"])
+    
+    # prompt the LLM with the system message and the messages in the state
+    prompt = [system] + state["messages"]
+    response = llm_with_tools.invoke(prompt)
+    
     return {"messages": [response]}
 
 def compose_final_answer(state: MyMessagesState):
@@ -108,8 +120,16 @@ def compose_final_answer(state: MyMessagesState):
     return {"messages": [response]}
 
 # --- Graph Construction ---
+# construct the graph with the nodes and edges
+# 1. three nodes: tool_calling_llm, tools, compose_final
+# 2. four edges: 
+#   START -> tool_calling_llm
+#   tool_calling_llm -> tools (conditional edge)
+#   tools -> tool_calling_llm (cyclic loop)
+#   compose_final -> END
 builder = StateGraph(MyMessagesState)
 
+# node 1
 builder.add_node("tool_calling_llm", tool_calling_llm)
 builder.add_node("tools", ToolNode([geocode_city, current_weather]))
 builder.add_node("compose_final", compose_final_answer)
@@ -123,6 +143,7 @@ builder.add_conditional_edges(
 builder.add_edge("tools", "tool_calling_llm")  # Cyclic loop for sequential tool calls
 builder.add_edge("compose_final", END)
 
+# compile the graph
 graph = builder.compile()
 
 # --- Visualization Helpers ---
@@ -157,8 +178,7 @@ def run_case(prompt: str, title: str):
     
     # initilize the graph with the initial state
     state = MyMessagesState(messages=[HumanMessage(content=prompt)])
-    result = graph.invoke(state)
-    #res = graph.invoke({"messages": [HumanMessage(content=prompt)]})
+    result = graph.invoke(state) # invoke the graph with the initial state
     
     for m in result["messages"]:
         if isinstance(m, AIMessage) and not m.tool_calls:
