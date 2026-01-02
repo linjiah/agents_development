@@ -1,0 +1,117 @@
+{
+  "tasks": {
+    "1": {
+      "id": "1",
+      "title": "Book round-trip flights to Paris",
+      "description": "Search for the best flight deals to CDG or ORY airports.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.824752"
+    },
+    "2": {
+      "id": "2",
+      "title": "Book accommodation in Paris",
+      "description": "Find a hotel or apartment, preferably in central arrondissements like the 1st, 4th, or 6th.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.825937"
+    },
+    "3": {
+      "id": "3",
+      "title": "Purchase travel insurance",
+      "description": "Ensure coverage for health, cancellations, and lost luggage.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.826593"
+    },
+    "4": {
+      "id": "4",
+      "title": "Verify passport and documents",
+      "description": "Check that your passport is valid for at least 6 months beyond travel dates.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.827256"
+    },
+    "5": {
+      "id": "5",
+      "title": "Purchase Paris Museum Pass",
+      "description": "Buy a 4-day or 6-day pass to save on entry fees for the Louvre, Versailles, etc.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.827998"
+    },
+    "6": {
+      "id": "6",
+      "title": "Set up local transportation pass",
+      "description": "Buy a Navigo Decouverte or a pack of tickets for the Metro/RER.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.828681"
+    },
+    "7": {
+      "id": "7",
+      "title": "Day 1: Iconic Landmarks & River Cruise",
+      "description": "Check-in, visit Eiffel Tower (book tickets in advance!), and take a sunset Seine River Cruise.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.829421"
+    },
+    "8": {
+      "id": "8",
+      "title": "Day 2: Art & History (Louvre)",
+      "description": "Spend the morning at the Louvre, followed by a stroll through Tuileries Garden.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.830039"
+    },
+    "9": {
+      "id": "9",
+      "title": "Day 3: Montmartre Charm",
+      "description": "Visit Sacr\u00e9-C\u0153ur, explore the artist square (Place du Tertre), and see the Moulin Rouge.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.830671"
+    },
+    "10": {
+      "id": "10",
+      "title": "Day 4: Left Bank & Latin Quarter",
+      "description": "See Notre-Dame (exterior), visit Shakespeare and Company, and relax in Luxembourg Gardens.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.831510"
+    },
+    "11": {
+      "id": "11",
+      "title": "Day 5: Royal Day Trip to Versailles",
+      "description": "Full day excursion to the Palace and Gardens of Versailles (take the RER C train).",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.832289"
+    },
+    "12": {
+      "id": "12",
+      "title": "Day 6: Fashion & Le Marais Shopping",
+      "description": "Walk the Champs-\u00c9lys\u00e9es to the Arc de Triomphe, then explore the boutiques of Le Marais.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.833276"
+    },
+    "13": {
+      "id": "13",
+      "title": "Day 7: Hidden Gems & Departure",
+      "description": "Visit P\u00e8re Lachaise Cemetery, enjoy Canal Saint-Martin, and buy last-minute souvenirs.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.834065"
+    },
+    "14": {
+      "id": "14",
+      "title": "Pack luggage",
+      "description": "Include comfortable walking shoes and layers for Parisian weather.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.834917"
+    },
+    "15": {
+      "id": "15",
+      "title": "Organize vacation photos",
+      "description": "Sort and edit trip photos; share with family/friends.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.835656"
+    },
+    "16": {
+      "id": "16",
+      "title": "Post-trip expense tracking",
+      "description": "Categorize spending and settle any shared costs.",
+      "status": "pending",
+      "created_at": "2025-12-21T13:15:12.836404"
+    }
+  },
+  "next_id": 17
+}

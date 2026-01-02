@@ -62,7 +62,14 @@ def analyze_image(image_path: str, question: Optional[str] = None) -> str:
         if question:
             prompt = question
         else:
-            prompt = "Describe this image in detail. Include objects, people, text, colors, and any other relevant information."
+            prompt = """Analyze this image in detail and provide:
+1. **People Identification**: Count and describe any people visible (approximate age, gender, appearance, position in image)
+2. **Activities**: What are the people doing? What tasks or activities are they engaged in?
+3. **Objects & Environment**: Describe objects, furniture, tools, devices, or workspace elements
+4. **Context**: What is the setting? (office, home, outdoor, etc.)
+5. **Work/Activity Analysis**: If people are working, what specifically are they working on? (reading, typing, drawing, using devices, etc.)
+
+Provide a comprehensive analysis focusing on people and their activities."""
         
         # Use Gemini's vision model
         # Try gemini-1.5-pro first (best vision), fallback to gemini-pro-vision

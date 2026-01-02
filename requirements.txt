@@ -13,8 +13,10 @@ requests>=2.31.0
 pydantic>=2.0.0
 
 # Optional: For web search and time tools
-duckduckgo-search>=3.9.0  # For web_search tool
+ddgs>=9.8.0  # For web_search tool (free, no API key) - new package name
+duckduckgo-search>=3.9.0  # Legacy package (fallback)
 pytz>=2023.3  # For timezone support in get_current_time
+requests>=2.31.0  # For Tavily API (if using TAVILY_API_KEY)
 
 # Optional: For advanced agent features
 langchain>=0.1.0
