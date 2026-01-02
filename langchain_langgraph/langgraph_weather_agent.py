@@ -141,7 +141,9 @@ def visualize_graph():
 
     # Optional: render PNG if graphviz is installed
     try:
-        g.draw_mermaid_png("langgraph_weather_agent.png")
+        png_bytes = g.draw_mermaid_png()
+        with open("langgraph_weather_agent.png", "wb") as f:
+            f.write(png_bytes)
         print("\nSaved PNG to langgraph_weather_agent.png")
     except Exception as exc:  # graphviz may be missing
         print(f"\nPNG not generated (graphviz likely missing): {exc}")
