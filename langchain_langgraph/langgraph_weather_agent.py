@@ -154,11 +154,16 @@ def run_case(prompt: str, title: str):
     print("\n" + "=" * 65)
     print(title)
     print("=" * 65)
-    res = graph.invoke({"messages": [HumanMessage(content=prompt)]})
-    for m in res["messages"]:
+    
+    # initilize the graph with the initial state
+    state = MyMessagesState(messages=[HumanMessage(content=prompt)])
+    result = graph.invoke(state)
+    #res = graph.invoke({"messages": [HumanMessage(content=prompt)]})
+    
+    for m in result["messages"]:
         if isinstance(m, AIMessage) and not m.tool_calls:
             print(f"[ASSISTANT] {m.content}")
 
 if __name__ == "__main__":
     run_case("Weather in Paris and London please.", "Test: Multi-city request")
-    visualize_graph()
+    #visualize_graph()
